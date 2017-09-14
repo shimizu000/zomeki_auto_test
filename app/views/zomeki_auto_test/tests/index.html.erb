@@ -1,0 +1,14 @@
+<table class="index">
+  <tr>
+    <th style="width: 90px;">テスト番号</th>
+    <th>シナリオ</th>
+    <th style="width: 60px; text-align: center;">結果</th>
+  </tr>
+  <%- for n in 0..(@auto_test_scenarios.count-1) -%>
+  <tr class="<%= cycle '', 'cycle' %>">
+    <td><%= n+1 %></td>
+    <td><%= @auto_test_scenarios[n] %></td>
+    <td style=" text-align: center;"><%= @auto_test_results[n] %></td>
+  </tr>
+  <%- end -%>
+</table>
