@@ -4,7 +4,6 @@ PATH
     zomeki_auto_test (0.1.0)
       capybara
       capybara-webkit
-      delayed_job
       delayed_job_active_record
       phantomjs
       poltergeist

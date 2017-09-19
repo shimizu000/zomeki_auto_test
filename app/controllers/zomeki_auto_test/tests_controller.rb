@@ -21,8 +21,8 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
   def index
     scenarios = Array.new(0)
     results = Array.new(0)
-    if File.exist?('spec/test_result.csv')
-      data_list = CSV.read('spec/test_result.csv')
+    if File.exist?('/var/www/zomeki-tester/spec/test_result.csv')
+      data_list = CSV.read('/var/www/zomeki-tester/spec/test_result.csv')
       n = 0
       while n >= 0
         break if data_list[n] == nil
