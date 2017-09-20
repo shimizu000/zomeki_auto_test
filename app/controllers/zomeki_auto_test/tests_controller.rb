@@ -13,7 +13,6 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
   end
 
   def start
-    start = Open3.capture3("./bin/delayed_job --queue=default start")
     AutoTestJob.perform_later(1)
     redirect_to root_path, notice: '自動テストを開始しました。'
   end
@@ -21,8 +20,8 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
   def index
     scenarios = Array.new(0)
     results = Array.new(0)
-    if File.exist?('/var/www/zomeki_auto_test_files/spec/test_result.csv')
-      data_list = CSV.read('/var/www/zomeki_auto_test_files/spec/test_result.csv')
+    if File.exist?('/var/www/zomeki_auto_test_files/test_result.csv')
+      data_list = CSV.read('/var/www/zomeki_auto_test_files/test_result.csv')
       n = 0
       while n >= 0
         break if data_list[n] == nil

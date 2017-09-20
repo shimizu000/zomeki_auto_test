@@ -19,18 +19,18 @@ module ZomekiAutoTest
           results = '×'
         end
         if count == 0
-          CSV.open('/var/www/zomeki_auto_test_files/spec/test_result.csv','w') do |test|
+          CSV.open('/var/www/zomeki_auto_test_files/test_result.csv','w') do |test|
             test.flock(File::LOCK_EX)
             test << [scenarios, results]
           end
         else
-          CSV.open('/var/www/zomeki_auto_test_files/spec/test_result.csv','a') do |test|
+          CSV.open('/var/www/zomeki_auto_test_files/test_result.csv','a') do |test|
             test.flock(File::LOCK_EX)
             test << [scenarios, results]
           end
         end
       end
-      stop = Open3.capture3("./bin/delayed_job --queue=default stop")
+      break
     end
   end
 end
