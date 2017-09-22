@@ -12,6 +12,10 @@ module ZomekiAutoTest
 
       for count in 0..125
         scenario, error, s = Open3.capture3("bundle exec rspec /var/www/zomeki_auto_test_files/spec/features/ボタンクリック.feature -e '_" + (count+1).to_s + " '")
+        CSV.open('/var/www/zomeki_auto_test_files/error.csv','w') do |test|
+          test.flock(File::LOCK_EX)
+          test << [scenario, error, s]
+        end
         scenarios = scenario.match(%r{ /\}\n\n:(.+?)_[0-9]})[1]
         if scenario.include?('[ログアウト完了]')
           results = '〇'
@@ -30,7 +34,6 @@ module ZomekiAutoTest
           end
         end
       end
-      break
     end
   end
 end
