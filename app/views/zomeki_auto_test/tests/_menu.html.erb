@@ -1,5 +1,16 @@
 <div class="actionMenu">
-<%= link_to '戻る', main_app.sys_plugins_path %>
+<%- if request.path_info == '/_system/plugins/zomeki_auto_test' -%>
+  <%= link_to '戻る', main_app.sys_plugins_path %>
+<%- else -%>
+  <%= link_to '戻る', root_path %>
+<%- end -%>
 <span class="separator"></span>
-<%= link_to "テスト実行", :action => 'start' %>
+<%- if request.path_info == '/_system/plugins/zomeki_auto_test/tests/detail' -%>
+  <%= link_to "削除", :action => 'start' %>
+<%- elsif request.path_info == '/_system/plugins/zomeki_auto_test/tests/scenario' -%>
+  <%= link_to "一覧", :action => 'start' %>
+<%- elsif request.path_info == '/_system/plugins/zomeki_auto_test/tests/result' -%>
+  <%= link_to "詳細", :action => 'start' %>
+<%- else -%>
+<%- end -%>
 </div>

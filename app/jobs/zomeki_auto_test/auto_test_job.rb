@@ -2,38 +2,45 @@ module ZomekiAutoTest
   class AutoTestJob < ApplicationJob
     queue_as :default
 
-    def perform(test)
+    def perform(file_name)
       require 'open3'
       require 'csv'
+      require "date"
       scenarios = ''
       results = ''
       error = ''
       s = ''
+      daytime = DateTime.now
+      daytime = daytime.strftime("%Y/%m/%d %H:%M:%S")
+      scenario, error, s = Open3.capture3('bundle exec rspec /var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature')
+      CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv','w') do |test|
+        test << [scenario]
+      end
+      CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_error.csv','w') do |test|
+        test << [error]
+      end
+      texts = scenario.split('::')
 
-      for count in 0..125
-        scenario, error, s = Open3.capture3("bundle exec rspec /var/www/zomeki_auto_test_files/spec/features/ボタンクリック.feature -e '_" + (count+1).to_s + " '")
-        CSV.open('/var/www/zomeki_auto_test_files/error.csv','w') do |test|
-          test.flock(File::LOCK_EX)
-          test << [scenario, error, s]
-        end
-        scenarios = scenario.match(%r{ /\}\n\n:(.+?)_[0-9]})[1]
-        if scenario.include?('[ログアウト完了]')
-          results = '〇'
-        else
-          results = '×'
-        end
-        if count == 0
-          CSV.open('/var/www/zomeki_auto_test_files/test_result.csv','w') do |test|
-            test.flock(File::LOCK_EX)
-            test << [scenarios, results]
+      for n in 0..(texts.count-1)
+        if n == 0
+          CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv','w') do |test|
+            test << [daytime]
           end
         else
-          CSV.open('/var/www/zomeki_auto_test_files/test_result.csv','a') do |test|
-            test.flock(File::LOCK_EX)
+          scenarios = texts[n].match(%r{(.+?)_[0-9]})[1]
+          if texts[n].include?('[ログアウト完了]')
+            results = '〇'
+          else
+            results = '×'
+          end
+          CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv','a') do |test|
             test << [scenarios, results]
           end
+          break if texts[n].include?('Failures:') || texts[n].include?('Pending:')
         end
       end
+      redirect_to root_path, notice: 'テストが終了しました。' if request.path_info == '/_system/plugins/zomeki_auto_test'
+      p request.path_info
     end
   end
 end
