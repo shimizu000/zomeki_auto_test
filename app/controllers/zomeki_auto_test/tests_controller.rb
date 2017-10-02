@@ -28,6 +28,7 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
       @read = file_data.read
 
       if File.extname(@original_name) == '.csv'
+        Dir.mkdir('/var/www/zomeki_auto_test_files/csv_files/') Dir.exist?('/var/www/zomeki_auto_test_files/csv_files/')
         File.open('/var/www/zomeki_auto_test_files/csv_files/' + @original_name, 'wb') do |of|
           of.write(@read)
         end
@@ -60,6 +61,7 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
     days = Array.new(0)
     for n in 0..(@auto_test_file_names.count-1)
       file_name = @auto_test_file_names[n]
+      Dir.mkdir('/var/www/zomeki_auto_test_files/results/') Dir.exist?('/var/www/zomeki_auto_test_files/results/')
       if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
         data_list = CSV.read('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
         days[n] = data_list[0][0]
@@ -74,6 +76,7 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
     scenarios = Array.new(0)
     results = Array.new(0)
     file_name = params[:id]
+    Dir.mkdir('/var/www/zomeki_auto_test_files/results/') Dir.exist?('/var/www/zomeki_auto_test_files/results/')
     if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
       data_list = CSV.read('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
       n = 1
@@ -97,6 +100,7 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
     output = ''
     texts = ''
     file_name = params[:id]
+    Dir.mkdir('/var/www/zomeki_auto_test_files/results/') Dir.exist?('/var/www/zomeki_auto_test_files/results/')
     if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv')
       output = File.read('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv')
       output.gsub!(/""/, '"')

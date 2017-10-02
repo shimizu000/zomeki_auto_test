@@ -13,6 +13,7 @@ module ZomekiAutoTest
       daytime = DateTime.now
       daytime = daytime.strftime("%Y/%m/%d %H:%M:%S")
       scenario, error, s = Open3.capture3('bundle exec rspec /var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature')
+      Dir.mkdir('/var/www/zomeki_auto_test_files/results/') Dir.exist?('/var/www/zomeki_auto_test_files/results/')
       CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv','w') do |test|
         test << [scenario]
       end
