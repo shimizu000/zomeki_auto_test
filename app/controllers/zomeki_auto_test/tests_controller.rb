@@ -28,7 +28,7 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
       @read = file_data.read
 
       if File.extname(@original_name) == '.csv'
-        Dir.mkdir('/var/www/zomeki_auto_test_files/csv_files/') Dir.exist?('/var/www/zomeki_auto_test_files/csv_files/')
+        Dir.mkdir('/var/www/zomeki_auto_test_files/csv_files/') unless Dir.exist?('/var/www/zomeki_auto_test_files/csv_files/')
         File.open('/var/www/zomeki_auto_test_files/csv_files/' + @original_name, 'wb') do |of|
           of.write(@read)
         end
@@ -47,6 +47,7 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
   end
 
   def index
+    @current_page = 'index'
     files = Array.new(0)
     Dir.glob("/var/www/zomeki_auto_test_files/**/*.feature").each do |file_name|
       names = file_name.match(%r{\/features\/(.+?)\.feature})[1]
@@ -61,7 +62,7 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
     days = Array.new(0)
     for n in 0..(@auto_test_file_names.count-1)
       file_name = @auto_test_file_names[n]
-      Dir.mkdir('/var/www/zomeki_auto_test_files/results/') Dir.exist?('/var/www/zomeki_auto_test_files/results/')
+      Dir.mkdir('/var/www/zomeki_auto_test_files/results/') unless Dir.exist?('/var/www/zomeki_auto_test_files/results/')
       if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
         data_list = CSV.read('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
         days[n] = data_list[0][0]
@@ -73,10 +74,11 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
   end
 
   def result
+    @current_page = 'result'
     scenarios = Array.new(0)
     results = Array.new(0)
     file_name = params[:id]
-    Dir.mkdir('/var/www/zomeki_auto_test_files/results/') Dir.exist?('/var/www/zomeki_auto_test_files/results/')
+    Dir.mkdir('/var/www/zomeki_auto_test_files/results/') unless Dir.exist?('/var/www/zomeki_auto_test_files/results/')
     if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
       data_list = CSV.read('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
       n = 1
@@ -97,10 +99,11 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
   end
 
   def scenario
+    @current_page = 'scenario'
     output = ''
     texts = ''
     file_name = params[:id]
-    Dir.mkdir('/var/www/zomeki_auto_test_files/results/') Dir.exist?('/var/www/zomeki_auto_test_files/results/')
+    Dir.mkdir('/var/www/zomeki_auto_test_files/results/') unless Dir.exist?('/var/www/zomeki_auto_test_files/results/')
     if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv')
       output = File.read('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv')
       output.gsub!(/""/, '"')
@@ -113,6 +116,7 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
   end
 
   def detail
+    @current_page = 'detail'
     output = ''
     file_name = params[:id]
     if File.exist?('/var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature')
@@ -127,11 +131,11 @@ class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
 
   def destroy
     file_name = params[:id]
-    File.delete('/var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature') if File.exist?('/var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature')
-    File.delete('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv') if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
-    File.delete('/var/www/zomeki_auto_test_files/results/' + file_name + '_error.csv') if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_error.csv')
-    File.delete('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv') if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv')
-    File.delete('/var/www/zomeki_auto_test_files/csv_files/' + file_name + '.csv') if File.exist?('/var/www/zomeki_auto_test_files/csv_files/' + file_name + '.csv')
+    FileUtils.rm_r('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv', secure: true) if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv')
+    FileUtils.rm_r('/var/www/zomeki_auto_test_files/results/' + file_name + '_error.csv', secure: true) if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_error.csv')
+    FileUtils.rm_r('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv', secure: true) if File.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv')
+    FileUtils.rm_r('/var/www/zomeki_auto_test_files/csv_files/' + file_name + '.csv', secure: true) if File.exist?('/var/www/zomeki_auto_test_files/csv_files/' + file_name + '.csv')
+    FileUtils.rm_r('/var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature', secure: true) if File.exist?('/var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature')
 
     text = 'ファイル"' + params[:id] + '"を削除しました。'
     redirect_to root_path, notice: text

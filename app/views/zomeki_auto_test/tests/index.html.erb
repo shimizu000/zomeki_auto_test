@@ -1,26 +1,29 @@
-<table class="upload">
-  <tr>
-	<%= form_tag import_tests_path, multipart: true do %>
-	  <%= file_field_tag :file %>
-	  <%= submit_tag "インポート" %>
-	<% end %>
-  </tr>
+<table style="margin-bottom: 15px;">
+  <tbody>
+    <tr>
+     <%= form_tag import_tests_path, multipart: true do %>
+       <%= file_field_tag :file %>
+       <%= submit_tag "インポート" %>
+     <% end %>
+    </tr>
+  </tbody>
 </table>
+
 <table class="index">
   <tr>
-  	<th style="width: 60px;">詳細</th>
+  	<th style="text-align: center; width: 60px;">詳細</th>
     <th>ファイル名</th>
-    <th style="width: 120px;">テスト実行</th>
-    <th style="width: 120px;">前回の結果</th>
-    <th style="width: 180px;">前回実行日時</th>
+    <th style="text-align: center; width: 80px;">テスト実行</th>
+    <th style="text-align: center; width: 80px;">前回の結果</th>
+    <th style="text-align: center; width: 160px;">前回実行日時</th>
   </tr>
   <%- for n in 0..(@auto_test_file_names.count-1) -%>
   <tr class="<%= cycle '', 'cycle' %>">
-  	<td style=" text-align: center;"><%= link_to "詳細", action: 'detail', id: @auto_test_file_names[n] %></td>
+  	<td style="text-align: center;"><%= link_to "詳細", action: 'detail', id: @auto_test_file_names[n] %></td>
     <td><%= @auto_test_file_names[n] %></td>
-    <td style=" text-align: center;"><%= link_to "実行", action: 'start', id: @auto_test_file_names[n] %></td>
-    <td style=" text-align: center;"><%= link_to "結果", action: 'result', id: @auto_test_file_names[n] %></td>
-    <td style=" text-align: center;"><%= @auto_test_days[n] %></td>
+    <td style="text-align: center;"><%= link_to "実行", action: 'start', id: @auto_test_file_names[n] %></td>
+    <td style="text-align: center;"><%= link_to "結果", action: 'result', id: @auto_test_file_names[n] %></td>
+    <td style="text-align: center;"><%= @auto_test_days[n] %></td>
   </tr>
   <%- end -%>
 </table>

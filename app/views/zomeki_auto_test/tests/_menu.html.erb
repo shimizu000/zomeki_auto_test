@@ -1,16 +1,18 @@
 <div class="actionMenu">
-<%- if request.path_info == '/_system/plugins/zomeki_auto_test' -%>
+<%- if @current_page == 'index' -%>
   <%= link_to '戻る', main_app.sys_plugins_path %>
 <%- else -%>
   <%= link_to '戻る', root_path %>
 <%- end -%>
-<span class="separator"></span>
-<%- if request.path_info == '/_system/plugins/zomeki_auto_test/tests/detail' -%>
-  <%= link_to "削除", :action => 'start' %>
-<%- elsif request.path_info == '/_system/plugins/zomeki_auto_test/tests/scenario' -%>
-  <%= link_to "一覧", :action => 'start' %>
-<%- elsif request.path_info == '/_system/plugins/zomeki_auto_test/tests/result' -%>
-  <%= link_to "詳細", :action => 'start' %>
+<%- if @current_page == 'detail' -%>
+  <span class="separator"></span>
+  <%= link_to "削除", action: 'destroy', id: @auto_test_id, data: { confirm: "削除します。よろしいですか？" } %>
+<%- elsif @current_page == 'scenario' -%>
+  <span class="separator"></span>
+  <%= link_to "一覧", action: 'result', id: @auto_test_id %>
+<%- elsif @current_page == 'result' -%>
+  <span class="separator"></span>
+  <%= link_to "詳細", action: 'scenario', id: @auto_test_id %>
 <%- else -%>
 <%- end -%>
 </div>
