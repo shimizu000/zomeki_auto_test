@@ -15,17 +15,18 @@ module ZomekiAutoTest
 
       scenario, error, s = Open3.capture3('bundle exec rspec /var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature')
       Dir.mkdir('/var/www/zomeki_auto_test_files/results/') unless Dir.exist?('/var/www/zomeki_auto_test_files/results/')
-      CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_scenario.csv','w') do |test|
+      Dir.mkdir('/var/www/zomeki_auto_test_files/results/' + file_name + '/') unless Dir.exist?('/var/www/zomeki_auto_test_files/results/' + file_name + '/')
+      CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '/' + file_name + '_scenario.csv','w') do |test|
         test << [scenario]
       end
-      CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_error.csv','w') do |test|
-       test << [error]
+      CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '/' + file_name + '_error.csv','w') do |test|
+        test << [error]
       end
       texts = scenario.split('::')
 
       for n in 0..(texts.count-1)
         if n == 0
-          CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv','w') do |test|
+          CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '/' + file_name + '_result.csv','w') do |test|
             test << [daytime]
           end
         else
@@ -35,7 +36,7 @@ module ZomekiAutoTest
           else
             results = '×'
           end
-          CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '_result.csv','a') do |test|
+          CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '/' + file_name + '_result.csv','a') do |test|
             test << [scenarios, results]
           end
           break if texts[n].include?('Failures:') || texts[n].include?('Pending:')
