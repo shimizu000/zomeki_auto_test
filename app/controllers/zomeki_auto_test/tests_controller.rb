@@ -1,4 +1,5 @@
 class ZomekiAutoTest::TestsController < Cms::Controller::Admin::Base
+  # coding: utf-8
   include ZomekiAutoTest
   layout  'admin/cms'
   require 'open3'
