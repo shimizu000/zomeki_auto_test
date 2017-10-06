@@ -11,8 +11,9 @@ module ZomekiAutoTest
       error = ''
       s = ''
 
+      daytime = '実行中'
       CSV.open('/var/www/zomeki_auto_test_files/results/' + file_name + '/' + file_name + '_result.csv','w') do |test|
-        test << ['実行中']
+        test << [daytime]
       end
       scenario, error, s = Open3.capture3('bundle exec rspec /var/www/zomeki_auto_test_files/spec/features/' + file_name + '.feature')
       Dir.mkdir('/var/www/zomeki_auto_test_files/results/') unless Dir.exist?('/var/www/zomeki_auto_test_files/results/')
@@ -47,9 +48,6 @@ module ZomekiAutoTest
           break if texts[n].include?('Failures:') || texts[n].include?('Pending:')
         end
       end
-
-      text = 'テスト"' + file_name + '"が終了しました。'
-      redirect_to root_path, notice: text if @current_page == 'index'
     end
   end
 end
